@@ -19,7 +19,7 @@ end
 
 (** Drop some prefix of an Hlist to get a suffix of it.
 
-   /O(n)/ allocation and work.
+    /O(n)/ allocation and work.
 *)
 val drop : 'elements_before t
   -> ('elements_before, 'elements_after) Suffix_index.t

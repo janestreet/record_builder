@@ -28,39 +28,39 @@ end
     application of [Fields.make_creator] will type-check.
 *)
 module type Make_creator_types = sig
-    (** An internal state which is folded through the fields. *)
-    type ('out, 'all_fields, 'extra) accum
+  (** An internal state which is folded through the fields. *)
+  type ('out, 'all_fields, 'extra) accum
 
-    (** Each part of the fold has a type of this form. *)
-    type ('field, 'head, 'tail, 'all_fields, 'extra) fold_step =
-      ('head, 'all_fields, 'extra) accum
-      -> ('all_fields -> 'field) * ('tail, 'all_fields, 'extra) accum
+  (** Each part of the fold has a type of this form. *)
+  type ('field, 'head, 'tail, 'all_fields, 'extra) fold_step =
+    ('head, 'all_fields, 'extra) accum
+    -> ('all_fields -> 'field) * ('tail, 'all_fields, 'extra) accum
 
-    (** A step of the fold over a single field has this type.
+  (** A step of the fold over a single field has this type.
 
-        Each argument to [Fields.make_creator] should take that field
-        as an argument and return something of this type (see [field] below).
-    *)
-    type ('field, 'tail, 'all_fields, 'extra) handle_one_field =
-      ( 'field
-      , ('field, 'tail) Hlist.cons
-      , 'tail
-      , 'all_fields Hlist.nonempty
-      , 'extra
-      ) fold_step
+      Each argument to [Fields.make_creator] should take that field
+      as an argument and return something of this type (see [field] below).
+  *)
+  type ('field, 'tail, 'all_fields, 'extra) handle_one_field =
+    ( 'field
+    , ('field, 'tail) Hlist.cons
+    , 'tail
+    , 'all_fields Hlist.nonempty
+    , 'extra
+    ) fold_step
 
-    (** The overall fold of multiple steps created by applying
-        [Fields.make_creator] without an initial value should have a type
-        of this form. You then supply it as an argument to [build_for_record] below.
-    *)
-    type ('record, 'all_fields, 'extra) handle_all_fields =
-      ( 'record
-      , 'all_fields Hlist.nonempty
-      , Hlist.nil
-      , 'all_fields Hlist.nonempty
-      , 'extra
-      ) fold_step
-  end
+  (** The overall fold of multiple steps created by applying
+      [Fields.make_creator] without an initial value should have a type
+      of this form. You then supply it as an argument to [build_for_record] below.
+  *)
+  type ('record, 'all_fields, 'extra) handle_all_fields =
+    ( 'record
+    , 'all_fields Hlist.nonempty
+    , Hlist.nil
+    , 'all_fields Hlist.nonempty
+    , 'extra
+    ) fold_step
+end
 
 (** Modules of this type are used to traverse a record using a specific
     applicative. They can be made using the functor [Record_builder.Make].
