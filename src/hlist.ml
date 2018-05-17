@@ -1,5 +1,4 @@
-open Core_kernel
-open! Int.Replace_polymorphic_compare
+open Base
 
 type nil = unit
 type ('head, 'tail) cons = 'head * 'tail

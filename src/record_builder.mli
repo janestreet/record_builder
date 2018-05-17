@@ -1,6 +1,6 @@
 module Hlist = Hlist
 
-include (module type of Record_builder_intf)
+include (module type of Record_builder_intf) (** @inline *)
 
 module Make(F : Partial_applicative_S) :
   Record_builder_S with type 'a applicative = 'a F.t

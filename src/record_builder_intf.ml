@@ -1,8 +1,6 @@
-open Core_kernel
+open Base
 
-(** A subset of the operations of an applicative.
-
-    This is only the operations we need to have for building a record.
+(** A subset of the operations of an {{!modtype:Base.Applicative.S}applicative}.
 *)
 module type Partial_applicative_S = sig
   type 'a t
@@ -12,6 +10,9 @@ module type Partial_applicative_S = sig
   val both : 'a t -> 'b t -> ('a * 'b) t
 end
 
+(** A subset of the operations of an {{!modtype:Base.Applicative.S2}applicative}
+    with two type parameters.
+*)
 module type Partial_applicative_S2 = sig
   type ('a, 'e) t
 
@@ -20,26 +21,23 @@ module type Partial_applicative_S2 = sig
   val both : ('a, 'e) t -> ('b, 'e) t -> ('a * 'b, 'e) t
 end
 
-(** These are the types used for building records by folding over fields.
-
-    You should never have to think about them, and should be able to
-    skip straight on to [Record_builder]. They are exposed
-    solely because they must be so that the
-    application of [Fields.make_creator] will type-check.
+(** The types used internally for building records by folding over fields
+    — you shouldn't need to know them, but they must be exposed to allow
+    type-checking to succeed.
 *)
 module type Make_creator_types = sig
   (** An internal state which is folded through the fields. *)
   type ('out, 'all_fields, 'extra) accum
 
-  (** Each part of the fold has a type of this form. *)
+  (** A step of the fold over one or more fields. *)
   type ('field, 'head, 'tail, 'all_fields, 'extra) fold_step =
     ('head, 'all_fields, 'extra) accum
     -> ('all_fields -> 'field) * ('tail, 'all_fields, 'extra) accum
 
-  (** A step of the fold over a single field has this type.
+  (** A step of the fold over one field.
 
       Each argument to [Fields.make_creator] should take that field
-      as an argument and return something of this type (see [field] below).
+      as an argument and return something of this type.
   *)
   type ('field, 'tail, 'all_fields, 'extra) handle_one_field =
     ( 'field
@@ -49,9 +47,11 @@ module type Make_creator_types = sig
     , 'extra
     ) fold_step
 
-  (** The overall fold of multiple steps created by applying
-      [Fields.make_creator] without an initial value should have a type
-      of this form. You then supply it as an argument to [build_for_record] below.
+  (** A step of the fold over all fields of a record.
+
+      The application of [Fields.make_creator] to all of the fields,
+      but without an initial value for the fold, should have this type
+      and be passed to {!Record_builder_S.build_for_record}.
   *)
   type ('record, 'all_fields, 'extra) handle_all_fields =
     ( 'record
@@ -63,21 +63,25 @@ module type Make_creator_types = sig
 end
 
 (** Modules of this type are used to traverse a record using a specific
-    applicative. They can be made using the functor [Record_builder.Make].
+    applicative. They can be made using the functor {!Record_builder.Make}.
 
-    This can be used to build all sorts of things, e.g. building
-    a catalog form for a record type, or building a creator function
-    which uses an applicative or monad like deferred to create the
-    content for each field, perhaps useful when combined with
-    [Quickcheck.Generator].
+    For example, we could traverse a record to create a quickcheck generator
+    for it.
 
-    e.g. {[
+    {[
+      type t = {
+        forename: string;
+        surname: string;
+        birthday: Date.t;
+      } [@@deriving fields]
+
       module G = Quickcheck.Generator
 
       let form : t G.t =
         let module B = Record_builder.Make(G) in
         let labelled_string field =
-          B.field (G.map String.gen ~f:(fun str -> sprintf "%s:%s" (Field.name field) str))
+          B.field (G.map String.gen ~f:(fun str ->
+            sprintf "%s:%s" (Field.name field) str))
         in
         B.build_for_record (
           Fields.make_creator
@@ -89,20 +93,21 @@ end
     Is equivalent to: {[
       let form : t G.t =
         let labelled_string field =
-          G.map String.gen ~f:(fun str -> sprintf "%s:%s" (Field.name field) str)
+          G.map String.gen ~f:(fun str ->
+            sprintf "%s:%s" (Field.name field) str)
         in
-        G.map
-          (G.both (labelled_string Field.forename) (G.both (labelled_string Field.surname) Date.gen)
-             ~f:(fun (forename, (surname, birthday)) -> { forename; surname; birthday; })
+        G.both (labelled_string Field.forename)
+          (G.both (labelled_string Field.surname) Date.gen)
+        |> G.map ~f:(fun (forename, (surname, birthday)) ->
+          { forename; surname; birthday; })
     ]}
 *)
 module type Record_builder_S = sig
   type 'a applicative
 
-  (** These types have to be exposed so that the typechecker
-      can tell that the use of [Fields.make_creator] is well-typed.
-
-      However, you shouldn't really have to think about them.
+  (** The types used internally for building records by folding over fields
+      — you shouldn't need to know them, but they must be exposed to allow
+      type-checking to succeed.
   *)
   module Make_creator_types : Make_creator_types
 
@@ -118,8 +123,8 @@ module type Record_builder_S = sig
   (** Build the overarching applicative for the whole record.
 
       This takes a partial application of [Fields.make_creator] as its argument,
-      which supplies the applicative terms to use for each field of the record. It
-      performs the mapping and combining of these terms automatically.
+      which should supply no initial value but use {!field} to supply a term
+      for every field of the record.
 
       The type of this is designed to match up with [Fields.make_creator]
       (see the example).
