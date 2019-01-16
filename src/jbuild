@@ -1,8 +1,0 @@
-(library (
-  (name        record_builder)
-  (public_name record_builder)
-  (libraries (base))
-  (preprocess (pps (ppx_jane -check-doc-comments ppxlib.runner)))
-  ))
-
-(jbuild_version 1)
