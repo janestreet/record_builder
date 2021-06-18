@@ -3,12 +3,10 @@ open Base
 type nil = unit
 type ('head, 'tail) cons = 'head * 'tail
 type 'elements nonempty = 'elements constraint 'elements = ('x, 'xs) cons
-
 type 'elements t = 'elements
 
 let empty = ()
 let cons x xs = x, xs
-
 let head = fst
 let tail = snd
 
@@ -29,19 +27,26 @@ module Path = struct
     | Head : (('element, _) cons, 'element) t
     | Tail : ('tail, 'res) t -> (('head, 'tail) cons, 'res) t
 
-  let rec follow : 'from 'res. ('from, 'res) t -> 'from hlist -> 'res
-    = fun (type from res) (t : (from, res) t) (list : from hlist) : res ->
-      match t with
-      | Stop -> list
-      | Head -> head list
-      | Tail and_then -> follow and_then (tail list)
+  let rec follow : 'from 'res. ('from, 'res) t -> 'from hlist -> 'res =
+    fun (type from res) (t : (from, res) t) (list : from hlist) : res ->
+    match t with
+    | Stop -> list
+    | Head -> head list
+    | Tail and_then -> follow and_then (tail list)
   ;;
 
-  let rec within : 'outer 'inner 'res. ('inner, 'res) t -> suffix:('outer, 'inner) Suffix_index.t -> ('outer, 'res) t
-    = fun (type outer inner res) (t : (inner, res) t) ~(suffix : (outer, inner) Suffix_index.t) : (outer, res) t ->
+  let rec within :
+    'outer 'inner 'res. ('inner, 'res) t -> suffix:('outer, 'inner) Suffix_index.t
+    -> ('outer, 'res) t
+    =
+    fun (type outer inner res)
+      (t : (inner, res) t)
+      ~(suffix : (outer, inner) Suffix_index.t)
+       : (outer, res) t ->
       match suffix with
       | Suffix_index.Whole_list -> t
       | Suffix_index.Tail_of suffix -> within (Tail t) ~suffix
+  ;;
 end
 
 let drop t suffix = Path.(follow (within ~suffix Stop) t)
@@ -52,6 +57,5 @@ module Element_index = struct
 
   let first_element = Path.Head
   let of_tail x = Path.Tail x
-
   let within t ~suffix = Path.within t ~suffix
 end

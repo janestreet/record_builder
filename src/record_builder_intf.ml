@@ -6,7 +6,6 @@ module type Partial_applicative_S = sig
   type 'a t
 
   val map : 'a t -> f:('a -> 'b) -> 'b t
-
   val both : 'a t -> 'b t -> ('a * 'b) t
 end
 
@@ -17,7 +16,6 @@ module type Partial_applicative_S2 = sig
   type ('a, 'e) t
 
   val map : ('a, 'e) t -> f:('a -> 'b) -> ('b, 'e) t
-
   val both : ('a, 'e) t -> ('b, 'e) t -> ('a * 'b, 'e) t
 end
 
@@ -44,8 +42,8 @@ module type Make_creator_types = sig
     , ('field, 'tail) Hlist.cons
     , 'tail
     , 'all_fields Hlist.nonempty
-    , 'extra
-    ) fold_step
+    , 'extra )
+      fold_step
 
   (** A step of the fold over all fields of a record.
 
@@ -58,8 +56,8 @@ module type Make_creator_types = sig
     , 'all_fields Hlist.nonempty
     , Hlist.nil
     , 'all_fields Hlist.nonempty
-    , 'extra
-    ) fold_step
+    , 'extra )
+      fold_step
 end
 
 (** Modules of this type are used to traverse a record using a specific
@@ -116,7 +114,8 @@ module type Record_builder_S = sig
       The type of this function is designed to match up with [Fields.make_creator]
       (see the example).
   *)
-  val field : 'field applicative
+  val field
+    :  'field applicative
     -> ('record, 'field) Field.t
     -> ('field, _, _, _) Make_creator_types.handle_one_field
 
@@ -130,7 +129,7 @@ module type Record_builder_S = sig
       (see the example).
   *)
   val build_for_record
-    : ('record, _, _) Make_creator_types.handle_all_fields
+    :  ('record, _, _) Make_creator_types.handle_all_fields
     -> 'record applicative
 end
 
@@ -139,11 +138,12 @@ module type Record_builder_S2 = sig
 
   module Make_creator_types : Make_creator_types
 
-  val field : ('field, 'e) applicative
+  val field
+    :  ('field, 'e) applicative
     -> ('record, 'field) Field.t
     -> ('field, _, _, 'e) Make_creator_types.handle_one_field
 
   val build_for_record
-    : ('record, _, 'e) Make_creator_types.handle_all_fields
+    :  ('record, _, 'e) Make_creator_types.handle_all_fields
     -> ('record, 'e) applicative
 end

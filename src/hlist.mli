@@ -2,33 +2,35 @@
     used to represent the fields of a record while rebuilding it.
 *)
 
-(** *)
-type 'elements t = 'elements
+type 'elements t = 'elements (** *)
+
 type nil = unit
 type ('head, 'tail) cons = 'head * 'tail
 type 'elements nonempty = 'elements constraint 'elements = ('x, 'xs) cons
 
 val empty : nil t
 val cons : 'a -> 'tail t -> ('a, 'tail) cons t
-
 val head : ('a, _) cons t -> 'a
 val tail : (_, 'tail) cons t -> 'tail
 
+(** @open *)
 module Suffix_index : sig
   type ('elements_before, 'elements_after) t
 
   val whole_list : ('elements, 'elements) t
   val tail_of : ('elements, (_, 'tail) cons) t -> ('elements, 'tail) t
-end (** @open *)
+end
 
 (** Drop some prefix of an Hlist to get a suffix of it.
 
     {i O(n)} allocation and work.
 *)
-val drop : 'elements_before t
+val drop
+  :  'elements_before t
   -> ('elements_before, 'elements_after) Suffix_index.t
   -> 'elements_after t
 
+(** @open *)
 module Element_index : sig
   type ('elements, 'element) t
 
@@ -39,8 +41,11 @@ module Element_index : sig
 
       {i O(n)} allocation and work.
   *)
-  val within : ('inner, 'element) t -> suffix:('outer, 'inner) Suffix_index.t -> ('outer, 'element) t
-end (** @open *)
+  val within
+    :  ('inner, 'element) t
+    -> suffix:('outer, 'inner) Suffix_index.t
+    -> ('outer, 'element) t
+end
 
 (** Get the element at some index of an hlist.
 
