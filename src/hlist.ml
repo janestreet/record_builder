@@ -36,8 +36,8 @@ module Path = struct
   ;;
 
   let rec within :
-    'outer 'inner 'res. ('inner, 'res) t -> suffix:('outer, 'inner) Suffix_index.t
-    -> ('outer, 'res) t
+    'outer 'inner 'res.
+    ('inner, 'res) t -> suffix:('outer, 'inner) Suffix_index.t -> ('outer, 'res) t
     =
     fun (type outer inner res)
       (t : (inner, res) t)
