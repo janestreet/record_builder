@@ -49,7 +49,7 @@ module type Make_creator_types = sig
 
       The application of [Fields.make_creator] to all of the fields,
       but without an initial value for the fold, should have this type
-      and be passed to {!Record_builder_S.build_for_record}.
+      and be passed to {!Record_builder.S.build_for_record}.
   *)
   type ('record, 'all_fields, 'extra) handle_all_fields =
     ( 'record
@@ -146,4 +146,18 @@ module type Record_builder_S2 = sig
   val build_for_record
     :  ('record, _, 'e) Make_creator_types.handle_all_fields
     -> ('record, 'e) applicative
+end
+
+module type Record_builder = sig
+  module Hlist = Hlist
+
+  module type Partial_applicative_S = Partial_applicative_S
+  module type Partial_applicative_S2 = Partial_applicative_S2
+  module type S = Record_builder_S
+  module type S2 = Record_builder_S2
+
+  module Make (F : Partial_applicative_S) : S with type 'a applicative = 'a F.t
+
+  module Make_2 (F : Partial_applicative_S2) :
+    S2 with type ('a, 'e) applicative = ('a, 'e) F.t
 end

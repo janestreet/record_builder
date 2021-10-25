@@ -1,6 +1,11 @@
 open Base
 module Hlist = Hlist
-include Record_builder_intf
+open Record_builder_intf
+
+module type Partial_applicative_S = Partial_applicative_S
+module type Partial_applicative_S2 = Partial_applicative_S2
+module type S = Record_builder_S
+module type S2 = Record_builder_S2
 
 module Make_internal (F : Partial_applicative_S2) = struct
   (** An internal type which is a special case of [F] constructing an [Hlist]. *)
