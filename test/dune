@@ -1,3 +1,3 @@
 (library (name record_builder_test)
- (libraries core_kernel.core expect_test_helpers_core record_builder)
+ (libraries core expect_test_helpers_core record_builder)
  (preprocess (pps ppx_jane)))
