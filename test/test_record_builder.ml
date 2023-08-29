@@ -22,7 +22,7 @@ module R = struct
     ; three : Date.t
     ; four : int
     }
-  [@@deriving sexp_of, fields, compare]
+  [@@deriving sexp_of, fields ~iterators:make_creator, compare]
 
   let examples =
     let open List.Let_syntax in
@@ -77,7 +77,7 @@ let%test_unit "record_builder test" =
 
 let%expect_test "order of effects" =
   let module F = struct
-    type 'a t = { run : unit -> unit } [@@unboxed] [@@deriving fields]
+    type 'a t = { run : unit -> unit } [@@unboxed] [@@deriving fields ~getters]
 
     let map x ~f:_ = { run = run x }
 
