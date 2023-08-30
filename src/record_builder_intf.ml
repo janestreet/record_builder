@@ -43,7 +43,7 @@ module type Make_creator_types = sig
     , 'tail
     , 'all_fields Hlist.nonempty
     , 'extra )
-      fold_step
+    fold_step
 
   (** A step of the fold over all fields of a record.
 
@@ -57,7 +57,7 @@ module type Make_creator_types = sig
     , Hlist.nil
     , 'all_fields Hlist.nonempty
     , 'extra )
-      fold_step
+    fold_step
 end
 
 (** Modules of this type are used to traverse a record using a specific

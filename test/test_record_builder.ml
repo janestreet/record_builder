@@ -58,8 +58,8 @@ let%test_unit "record_builder test" =
   let handle_field field =
     B.field
       (fun record ->
-         incr fields_seen;
-         Field.get field record)
+        incr fields_seen;
+        Field.get field record)
       field
   in
   let equivalent_to_id =
@@ -84,8 +84,8 @@ let%expect_test "order of effects" =
     let both x y =
       { run =
           (fun () ->
-             run x ();
-             run y ())
+            run x ();
+            run y ())
       }
     ;;
 
