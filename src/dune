@@ -1,2 +1,6 @@
-(library (name record_builder) (public_name record_builder) (libraries base)
- (preprocess (pps ppx_jane)))
+(library
+ (name record_builder)
+ (public_name record_builder)
+ (libraries base)
+ (preprocess
+  (pps ppx_jane)))
