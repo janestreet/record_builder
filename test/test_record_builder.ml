@@ -109,5 +109,6 @@ let%expect_test "order of effects" =
     field: one
     field: two
     field: three
-    field: four |}]
+    field: four
+    |}]
 ;;
