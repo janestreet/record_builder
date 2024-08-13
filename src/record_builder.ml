@@ -34,19 +34,19 @@ module Make_internal (F : Partial_applicative_S2) = struct
 
     type ('field, 'tail, 'all_fields, 'extra) handle_one_field =
       ( 'field
-      , ('field, 'tail) Hlist.cons
-      , 'tail
-      , 'all_fields Hlist.nonempty
-      , 'extra )
-      fold_step
+        , ('field, 'tail) Hlist.cons
+        , 'tail
+        , 'all_fields Hlist.nonempty
+        , 'extra )
+        fold_step
 
     type ('record, 'all_fields, 'extra) handle_all_fields =
       ( 'record
-      , 'all_fields Hlist.nonempty
-      , Hlist.nil
-      , 'all_fields Hlist.nonempty
-      , 'extra )
-      fold_step
+        , 'all_fields Hlist.nonempty
+        , Hlist.nil
+        , 'all_fields Hlist.nonempty
+        , 'extra )
+        fold_step
   end
 
   let field applicative _field (build_hlist, suffix) =
@@ -69,11 +69,11 @@ module Make (F : Partial_applicative_S) = struct
   type 'a applicative = 'a F.t
 
   include Make_internal (struct
-    type ('a, 'e) t = 'a applicative
+      type ('a, 'e) t = 'a applicative
 
-    let map = F.map
-    let both = F.both
-  end)
+      let map = F.map
+      let both = F.both
+    end)
 end
 
 module Make_2 (F : Partial_applicative_S2) = struct

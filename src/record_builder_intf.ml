@@ -39,11 +39,11 @@ module type Make_creator_types = sig
   *)
   type ('field, 'tail, 'all_fields, 'extra) handle_one_field =
     ( 'field
-    , ('field, 'tail) Hlist.cons
-    , 'tail
-    , 'all_fields Hlist.nonempty
-    , 'extra )
-    fold_step
+      , ('field, 'tail) Hlist.cons
+      , 'tail
+      , 'all_fields Hlist.nonempty
+      , 'extra )
+      fold_step
 
   (** A step of the fold over all fields of a record.
 
@@ -53,11 +53,11 @@ module type Make_creator_types = sig
   *)
   type ('record, 'all_fields, 'extra) handle_all_fields =
     ( 'record
-    , 'all_fields Hlist.nonempty
-    , Hlist.nil
-    , 'all_fields Hlist.nonempty
-    , 'extra )
-    fold_step
+      , 'all_fields Hlist.nonempty
+      , Hlist.nil
+      , 'all_fields Hlist.nonempty
+      , 'extra )
+      fold_step
 end
 
 (** Modules of this type are used to traverse a record using a specific
@@ -88,7 +88,8 @@ end
             ~birthday:(B.field Date.gen))
     ]}
 
-    Is equivalent to: {[
+    Is equivalent to:
+    {[
       let form : t G.t =
         let labelled_string field =
           G.map String.gen ~f:(fun str ->

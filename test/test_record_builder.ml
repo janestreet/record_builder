@@ -105,7 +105,8 @@ let%expect_test "order of effects" =
          ~four:handle_field)
   in
   F.run print_field_names ();
-  [%expect {|
+  [%expect
+    {|
     field: one
     field: two
     field: three
