@@ -1,6 +1,5 @@
-(** A set of right-nested tuples and associated types
-    used to represent the fields of a record while rebuilding it.
-*)
+(** A set of right-nested tuples and associated types used to represent the fields of a
+    record while rebuilding it. *)
 
 type 'elements t = 'elements (** *)
 
@@ -23,8 +22,7 @@ end
 
 (** Drop some prefix of an Hlist to get a suffix of it.
 
-    {i O(n)} allocation and work.
-*)
+    {i O(n)} allocation and work. *)
 val drop
   :  'elements_before t
   -> ('elements_before, 'elements_after) Suffix_index.t
@@ -39,8 +37,7 @@ module Element_index : sig
 
   (** Transform an index to find an element within a suffix of the list.
 
-      {i O(n)} allocation and work.
-  *)
+      {i O(n)} allocation and work. *)
   val within
     :  ('inner, 'element) t
     -> suffix:('outer, 'inner) Suffix_index.t
@@ -49,6 +46,5 @@ end
 
 (** Get the element at some index of an hlist.
 
-    {i O(n)} work, no allocation.
-*)
+    {i O(n)} work, no allocation. *)
 val nth : 'elements t -> ('elements, 'element) Element_index.t -> 'element
