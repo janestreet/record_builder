@@ -29,23 +29,23 @@ module Path = struct
 
   let rec follow : 'from 'res. ('from, 'res) t -> 'from hlist -> 'res =
     fun (type from res) (t : (from, res) t) (list : from hlist) : res ->
-    (match t with
-     | Stop -> list
-     | Head -> head list
-     | Tail and_then -> follow and_then (tail list))
+    match t with
+    | Stop -> list
+    | Head -> head list
+    | Tail and_then -> follow and_then (tail list)
   ;;
 
-  let rec within :
-            'outer 'inner 'res.
-            ('inner, 'res) t -> suffix:('outer, 'inner) Suffix_index.t -> ('outer, 'res) t
+  let rec within
+    : 'outer 'inner 'res.
+    ('inner, 'res) t -> suffix:('outer, 'inner) Suffix_index.t -> ('outer, 'res) t
     =
     fun (type outer inner res)
-        (t : (inner, res) t)
-        ~(suffix : (outer, inner) Suffix_index.t)
+      (t : (inner, res) t)
+      ~(suffix : (outer, inner) Suffix_index.t)
       : (outer, res) t ->
-    (match suffix with
-     | Suffix_index.Whole_list -> t
-     | Suffix_index.Tail_of suffix -> within (Tail t) ~suffix)
+    match suffix with
+    | Suffix_index.Whole_list -> t
+    | Suffix_index.Tail_of suffix -> within (Tail t) ~suffix
   ;;
 end
 
