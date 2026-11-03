@@ -1,3 +1,5 @@
+@@ portable
+
 (** A set of right-nested tuples and associated types used to represent the fields of a
     record while rebuilding it. *)
 
@@ -14,7 +16,7 @@ val tail : (_, 'tail) cons t -> 'tail
 
 (** @open *)
 module Suffix_index : sig
-  type ('elements_before, 'elements_after) t
+  type ('elements_before, 'elements_after) t : immutable_data
 
   val whole_list : ('elements, 'elements) t
   val tail_of : ('elements, (_, 'tail) cons) t -> ('elements, 'tail) t
@@ -30,7 +32,7 @@ val drop
 
 (** @open *)
 module Element_index : sig
-  type ('elements, 'element) t
+  type ('elements, 'element) t : immutable_data
 
   val first_element : (('head, _) cons, 'head) t
   val of_tail : ('tail, 'element) t -> ((_, 'tail) cons, 'element) t

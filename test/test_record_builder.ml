@@ -22,7 +22,7 @@ module R = struct
     ; three : Date.t
     ; four : int
     }
-  [@@deriving sexp_of, fields ~iterators:make_creator, compare]
+  [@@deriving sexp_of, fields ~iterators:make_creator, compare ~localize]
 
   let examples =
     let open List.Let_syntax in

@@ -1,4 +1,5 @@
 open Base
+module Hlist = Record_builder_hlist
 
 (** A subset of the operations of an {{!modtype:Base.Applicative.S} applicative}. *)
 module type Partial_applicative_S = sig
@@ -149,8 +150,9 @@ module type Record_builder = sig
   module type S = Record_builder_S
   module type S2 = Record_builder_S2
 
-  module Make (F : Partial_applicative_S) : S with type 'a applicative = 'a F.t
+  module%template.portable Make (F : Partial_applicative_S) :
+    S with type 'a applicative = 'a F.t
 
-  module Make_2 (F : Partial_applicative_S2) :
+  module%template.portable Make_2 (F : Partial_applicative_S2) :
     S2 with type ('a, 'e) applicative = ('a, 'e) F.t
 end

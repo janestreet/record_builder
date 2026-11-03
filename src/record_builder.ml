@@ -1,5 +1,5 @@
 open Base
-module Hlist = Hlist
+module Hlist = Record_builder_hlist
 open Record_builder_intf
 
 module type Partial_applicative_S = Partial_applicative_S
@@ -7,7 +7,7 @@ module type Partial_applicative_S2 = Partial_applicative_S2
 module type S = Record_builder_S
 module type S2 = Record_builder_S2
 
-module Make_internal (F : Partial_applicative_S2) = struct
+module%template.portable Make_internal (F : Partial_applicative_S2) = struct
   (** An internal type which is a special case of [F] constructing an [Hlist]. *)
   module Hlist_F = struct
     type ('a, 'e) t =
@@ -65,10 +65,10 @@ module Make_internal (F : Partial_applicative_S2) = struct
   ;;
 end
 
-module Make (F : Partial_applicative_S) = struct
+module%template.portable [@modality p] Make (F : Partial_applicative_S) = struct
   type 'a applicative = 'a F.t
 
-  include Make_internal (struct
+  include Make_internal [@modality p] (struct
       type ('a, 'e) t = 'a applicative
 
       let map = F.map
@@ -76,8 +76,8 @@ module Make (F : Partial_applicative_S) = struct
     end)
 end
 
-module Make_2 (F : Partial_applicative_S2) = struct
+module%template.portable [@modality p] Make_2 (F : Partial_applicative_S2) = struct
   type ('a, 'e) applicative = ('a, 'e) F.t
 
-  include Make_internal (F)
+  include Make_internal [@modality p] (F)
 end
