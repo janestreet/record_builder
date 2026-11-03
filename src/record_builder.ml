@@ -1,5 +1,5 @@
 open Base
-module Hlist = Hlist
+module Hlist = Record_builder_hlist
 open Record_builder_intf
 
 module type Partial_applicative_S = Partial_applicative_S

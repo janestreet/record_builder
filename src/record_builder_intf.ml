@@ -1,4 +1,5 @@
 open Base
+module Hlist = Record_builder_hlist
 
 (** A subset of the operations of an {{!modtype:Base.Applicative.S} applicative}. *)
 module type Partial_applicative_S = sig
